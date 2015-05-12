@@ -15,9 +15,11 @@ root.title("Best of Bronze")
 config = ConfigParser.ConfigParser()
 config.read("cfg/config.cfg")
 
+PATH = config.get("GAME_PATH", "path")
+
 
 # VARIABLES
-cmddir = r"C:\Riot Games\League of Legends\RADS\solutions\lol_game_client_sln\releases\0.0.1.88\deploy"
+#cmddir = r"C:\Riot Games\League of Legends\RADS\solutions\lol_game_client_sln\releases\0.0.1.88\deploy"
 cmdparts = ["League of Legends.exe", "8394", "LoLLauncher.exe", "", "spectator spectator.euw1.lol.riotgames.com:80"]
 command = ""
 
@@ -123,7 +125,7 @@ def watch():
 	lastpart = "\"" + str(cmdparts[4]) + " " + str(cmdparts[6]) + " " + str(cmdparts[5]) + " " + str(cmdparts[8]) + "\""
 	command = "cmd /C start \"LoL\" " + "\"" + str(cmdparts[0]) + "\"" + " " + "\"" + str(cmdparts[1]) + "\"" + " " + "\"" + str(cmdparts[2]) + "\"" + " " + "\"" + str(cmdparts[3]) + "\"" + " " + str(lastpart)
 	
-	subprocess.Popen(command, shell=False, cwd=cmddir)
+	subprocess.Popen(command, shell=False, cwd=PATH)
 	
 	return 0
 
