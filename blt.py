@@ -96,10 +96,10 @@ def search():
 	player_name = playerlist[iteration][0].encode('utf-8')
 	[gamedata, ranklist] = functions.findSpecDataById(functions.findIdByName(player_name))
 	
+	# UPDATE SPEC URL
 	cmdparts.extend(gamedata)
 	cmdparts.append("EUW1")
-	
-	# UPDATE SPEC URL
+
 	# UPDATE LABELS
 	for i in range(0,10):
 		canvas_text[i].set(ranklist[i])
