@@ -143,6 +143,7 @@ def fetchRanksOfIngamePlayers(tmp):
     
        
 def findSpecDataById(id):
+	champIdList = []
 	url = "https://euw.api.pvp.net/observer-mode/rest/consumer/getSpectatorGameInfo/EUW1/"+str(id)+"?api_key=" + API_KEY
 	
 	try:
@@ -159,10 +160,13 @@ def findSpecDataById(id):
 	gameLength = tmp[unicode("gameLength")]
 	encKey = tmp[unicode("observers")][unicode("encryptionKey")]
 	
+	for i in range(0,10):
+		champIdList.append(tmp[unicode("participants")][i][unicode("championId")])
+	
 	rankList = fetchRanksOfIngamePlayers(tmp)
 	
 	value = []
 	value.append(gameId)
 	value.append(encKey)
 	value.append(gameLength)
-	return value, rankList
+	return value, rankList, champIdList

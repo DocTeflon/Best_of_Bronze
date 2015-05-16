@@ -94,7 +94,10 @@ def search():
 		if functions.fetchcontent(playerlist[iteration][0].encode('utf-8')):
 			break;
 	player_name = playerlist[iteration][0].encode('utf-8')
-	[gamedata, ranklist] = functions.findSpecDataById(functions.findIdByName(player_name))
+	[gamedata, ranklist, champIdList] = functions.findSpecDataById(functions.findIdByName(player_name))
+	
+	# DEBUG
+	print champIdList
 	
 	# UPDATE SPEC URL
 	cmdparts.extend(gamedata)
