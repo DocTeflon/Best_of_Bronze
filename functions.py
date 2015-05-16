@@ -3,6 +3,7 @@ import re
 import json
 import sqlite3
 import ConfigParser
+from ChampDic import championDic
 
 
 # CONFIG
@@ -170,3 +171,9 @@ def findSpecDataById(id):
 	value.append(encKey)
 	value.append(gameLength)
 	return value, rankList, champIdList
+
+def returnChampNameById(id):
+	try:
+		return championDic[id]
+	except KeyError as k:
+		return "Id not known"

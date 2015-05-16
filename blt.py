@@ -98,6 +98,9 @@ def search():
 	
 	# DEBUG
 	print champIdList
+	print "Names:"
+	for el in champIdList:
+		print functions.returnChampNameById(el)
 	
 	# UPDATE SPEC URL
 	cmdparts.extend(gamedata)
