@@ -15,11 +15,10 @@ root.title("Best of Bronze")
 config = ConfigParser.ConfigParser()
 config.read("cfg/config.cfg")
 
-PATH = config.get("GAME_PATH", "path")
-
+PATH = str(config.get("GAME_PATH", "path"))
 
 # VARIABLES
-#cmddir = r"C:\Riot Games\League of Legends\RADS\solutions\lol_game_client_sln\releases\0.0.1.88\deploy"
+#cmddir = r"D:\Spiele\League of Legends\RADS\solutions\lol_game_client_sln\releases\0.0.1.89\deploy"
 cmdparts = ["League of Legends.exe", "8394", "LoLLauncher.exe", "", "spectator spectator.euw1.lol.riotgames.com:80"]
 command = ""
 
@@ -41,12 +40,15 @@ game_type.set("")	#gametype str variable
 
 playerlist = [] 
 iteration = -1 
-canvas_text = []
+CanvasRankText = []
+CanvasChampText = []
 
 for i in range(0,10):
-	canvas_text.append(Tk.StringVar())		#fil canvas_text with str variables
+	CanvasRankText.append(Tk.StringVar())		#fill CanvasRankText with str variables
+	CanvasChampText.append(Tk.StringVar())
 for i in range(0,10):
-	canvas_text[i].set("Player " + str(i+1))
+	CanvasRankText[i].set("Player " + str(i+1))
+	CanvasChampText[i].set("Champion " + str(i+1))
 
 
 # READ IN PLAYERS
@@ -67,7 +69,6 @@ def search():
 	root.update()
 
 	global iteration
-	global canvas_text
 	game_switch = 1
 	
 	
@@ -95,20 +96,16 @@ def search():
 			break;
 	player_name = playerlist[iteration][0].encode('utf-8')
 	[gamedata, ranklist, champIdList] = functions.findSpecDataById(functions.findIdByName(player_name))
-	
-	# DEBUG
-	print champIdList
-	print "Names:"
-	for el in champIdList:
-		print functions.returnChampNameById(el)
-	
+
 	# UPDATE SPEC URL
+	cmdparts = []
 	cmdparts.extend(gamedata)
 	cmdparts.append("EUW1")
 
 	# UPDATE LABELS
 	for i in range(0,10):
-		canvas_text[i].set(ranklist[i])
+		CanvasRankText[i].set(ranklist[i])
+
 	# UPDATE GAMETIME
 	game_time_short = gamedata[2]
 	if game_time_short <= 60:
@@ -117,23 +114,23 @@ def search():
 		ingame_time.set(str(game_time_short/60)+ " Minuten")
 	# UPDATE GAMEMODE
 	game_type.set("Ranked Game by " + player_name)
+	# SHOW CHAMPNAMES
+	for i in range(0,10):
+		CanvasChampText[i].set(functions.returnChampNameById(champIdList[i]))
 	return 0
-
-
 
 
 #watch
 def watch():
+	print "watch gedruckt"
 	global iteration
-	if iteration is 0:
+	if iteration is -1:
 		return 0
-	
-	lastpart = "\"" + str(cmdparts[4]) + " " + str(cmdparts[6]) + " " + str(cmdparts[5]) + " " + str(cmdparts[8]) + "\""
-	command = "cmd /C start \"LoL\" " + "\"" + str(cmdparts[0]) + "\"" + " " + "\"" + str(cmdparts[1]) + "\"" + " " + "\"" + str(cmdparts[2]) + "\"" + " " + "\"" + str(cmdparts[3]) + "\"" + " " + str(lastpart)
-	
-	subprocess.Popen(command, shell=False, cwd=PATH)
-	
-	return 0
+	else:
+		lastpart = "\"" + str(cmdparts[4]) + " " + str(cmdparts[6]) + " " + str(cmdparts[5]) + " " + str(cmdparts[8]) + "\""
+		command = "cmd /C start \"LoL\" " + "\"" + str(cmdparts[0]) + "\"" + " " + "\"" + str(cmdparts[1]) + "\"" + " " + "\"" + str(cmdparts[2]) + "\"" + " " + "\"" + str(cmdparts[3]) + "\"" + " " + str(lastpart)
+		subprocess.Popen(command, shell=False, cwd=PATH)	
+		return 0
 
 
 
@@ -174,8 +171,6 @@ MidFrameCanvas7 = Tk.Canvas(MidFrameRight, width = screen_width/2, height = midf
 MidFrameCanvas8 = Tk.Canvas(MidFrameRight, width = screen_width/2, height = midframe_canvas_height, bg = "white", bd = 2, relief="ridge")
 MidFrameCanvas9 = Tk.Canvas(MidFrameRight, width = screen_width/2, height = midframe_canvas_height, bg = "white", bd = 2, relief="ridge")
 
-
-
 # LABELS
 IngameTimeLabel = Tk.Label(TopFrame, font="Times 16 bold", textvariable = ingame_time, bg = "white", fg = "black")
 GameTypeLabel = Tk.Label(TopFrame, font="Times 24 bold", textvariable = game_type, bg = "white", fg = "black")
@@ -183,37 +178,66 @@ GameTypeLabel = Tk.Label(TopFrame, font="Times 24 bold", textvariable = game_typ
 
 
 # TEXT IN CANVAS
-MidFrameCanvas0PlayerRank = Tk.Label(textvariable = canvas_text[0] , fg = "black", font = "times 24 italic", bg = "white")
+MidFrameCanvas0PlayerRank = Tk.Label(textvariable = CanvasRankText[0] , fg = "black", font = "times 24 italic", bg = "white")
 MidFrameCanvas0.create_window(10,midframe_canvas_height/2, anchor = "w", window = MidFrameCanvas0PlayerRank)
 
-MidFrameCanvas1PlayerRank = Tk.Label(textvariable = canvas_text[1] , fg = "black", font = "times 24 italic", bg = "white")
+MidFrameCanvas1PlayerRank = Tk.Label(textvariable = CanvasRankText[1] , fg = "black", font = "times 24 italic", bg = "white")
 MidFrameCanvas1.create_window(10,midframe_canvas_height/2, anchor = "w", window = MidFrameCanvas1PlayerRank)
 
-MidFrameCanvas2PlayerRank = Tk.Label(textvariable = canvas_text[2] , fg = "black", font = "times 24 italic", bg = "white")
+MidFrameCanvas2PlayerRank = Tk.Label(textvariable = CanvasRankText[2] , fg = "black", font = "times 24 italic", bg = "white")
 MidFrameCanvas2.create_window(10,midframe_canvas_height/2, anchor = "w", window = MidFrameCanvas2PlayerRank)
 
-MidFrameCanvas3PlayerRank = Tk.Label(textvariable = canvas_text[3] , fg = "black", font = "times 24 italic", bg = "white")
+MidFrameCanvas3PlayerRank = Tk.Label(textvariable = CanvasRankText[3] , fg = "black", font = "times 24 italic", bg = "white")
 MidFrameCanvas3.create_window(10,midframe_canvas_height/2, anchor = "w", window = MidFrameCanvas3PlayerRank)
 
-MidFrameCanvas4PlayerRank = Tk.Label(textvariable = canvas_text[4] , fg = "black", font = "times 24 italic", bg = "white")
+MidFrameCanvas4PlayerRank = Tk.Label(textvariable = CanvasRankText[4] , fg = "black", font = "times 24 italic", bg = "white")
 MidFrameCanvas4.create_window(10,midframe_canvas_height/2, anchor = "w", window = MidFrameCanvas4PlayerRank)
 
-MidFrameCanvas5PlayerRank = Tk.Label(textvariable = canvas_text[5] , fg = "black", font = "times 24 italic", bg = "white")
+MidFrameCanvas5PlayerRank = Tk.Label(textvariable = CanvasRankText[5] , fg = "black", font = "times 24 italic", bg = "white")
 MidFrameCanvas5.create_window(10,midframe_canvas_height/2, anchor = "w", window = MidFrameCanvas5PlayerRank)
 
-MidFrameCanvas6PlayerRank = Tk.Label(textvariable = canvas_text[6] , fg = "black", font = "times 24 italic", bg = "white")
+MidFrameCanvas6PlayerRank = Tk.Label(textvariable = CanvasRankText[6] , fg = "black", font = "times 24 italic", bg = "white")
 MidFrameCanvas6.create_window(10,midframe_canvas_height/2, anchor = "w", window = MidFrameCanvas6PlayerRank)
 
-MidFrameCanvas7PlayerRank = Tk.Label(textvariable = canvas_text[7] , fg = "black", font = "times 24 italic", bg = "white")
+MidFrameCanvas7PlayerRank = Tk.Label(textvariable = CanvasRankText[7] , fg = "black", font = "times 24 italic", bg = "white")
 MidFrameCanvas7.create_window(10,midframe_canvas_height/2, anchor = "w", window = MidFrameCanvas7PlayerRank)
 
-MidFrameCanvas8PlayerRank = Tk.Label(textvariable = canvas_text[8] , fg = "black", font = "times 24 italic", bg = "white")
+MidFrameCanvas8PlayerRank = Tk.Label(textvariable = CanvasRankText[8] , fg = "black", font = "times 24 italic", bg = "white")
 MidFrameCanvas8.create_window(10,midframe_canvas_height/2, anchor = "w", window = MidFrameCanvas8PlayerRank)
 
-MidFrameCanvas9PlayerRank = Tk.Label(textvariable = canvas_text[9] , fg = "black", font = "times 24 italic", bg = "white")
+MidFrameCanvas9PlayerRank = Tk.Label(textvariable = CanvasRankText[9] , fg = "black", font = "times 24 italic", bg = "white")
 MidFrameCanvas9.create_window(10,midframe_canvas_height/2, anchor = "w", window = MidFrameCanvas9PlayerRank)
 
 
+MidFrameCanvas0ChampName = Tk.Label(textvariable = CanvasChampText[0] , fg = "black", font = "times 24 italic", bg = "white")
+MidFrameCanvas0.create_window(800,midframe_canvas_height/2, anchor = "e", window = MidFrameCanvas0ChampName)
+
+MidFrameCanvas1ChampName = Tk.Label(textvariable = CanvasChampText[1] , fg = "black", font = "times 24 italic", bg = "white")
+MidFrameCanvas1.create_window(800,midframe_canvas_height/2, anchor = "e", window = MidFrameCanvas1ChampName)
+
+MidFrameCanvas2ChampName = Tk.Label(textvariable = CanvasChampText[2] , fg = "black", font = "times 24 italic", bg = "white")
+MidFrameCanvas2.create_window(800,midframe_canvas_height/2, anchor = "e", window = MidFrameCanvas2ChampName)
+
+MidFrameCanvas3ChampName = Tk.Label(textvariable = CanvasChampText[3] , fg = "black", font = "times 24 italic", bg = "white")
+MidFrameCanvas3.create_window(800,midframe_canvas_height/2, anchor = "e", window = MidFrameCanvas3ChampName)
+
+MidFrameCanvas4ChampName = Tk.Label(textvariable = CanvasChampText[4] , fg = "black", font = "times 24 italic", bg = "white")
+MidFrameCanvas4.create_window(800,midframe_canvas_height/2, anchor = "e", window = MidFrameCanvas4ChampName)
+
+MidFrameCanvas5ChampName = Tk.Label(textvariable = CanvasChampText[5] , fg = "black", font = "times 24 italic", bg = "white")
+MidFrameCanvas5.create_window(800,midframe_canvas_height/2, anchor = "e", window = MidFrameCanvas5ChampName)
+
+MidFrameCanvas6ChampName = Tk.Label(textvariable = CanvasChampText[6] , fg = "black", font = "times 24 italic", bg = "white")
+MidFrameCanvas6.create_window(800,midframe_canvas_height/2, anchor = "e", window = MidFrameCanvas6ChampName)
+
+MidFrameCanvas7ChampName = Tk.Label(textvariable = CanvasChampText[7] , fg = "black", font = "times 24 italic", bg = "white")
+MidFrameCanvas7.create_window(800,midframe_canvas_height/2, anchor = "e", window = MidFrameCanvas7ChampName)
+
+MidFrameCanvas8ChampName = Tk.Label(textvariable = CanvasChampText[8] , fg = "black", font = "times 24 italic", bg = "white")
+MidFrameCanvas8.create_window(800,midframe_canvas_height/2, anchor = "e", window = MidFrameCanvas8ChampName)
+
+MidFrameCanvas9ChampName = Tk.Label(textvariable = CanvasChampText[9] , fg = "black", font = "times 24 italic", bg = "white")
+MidFrameCanvas9.create_window(800,midframe_canvas_height/2, anchor = "e", window = MidFrameCanvas9ChampName)
 
 # GRIDDING
 # frames
@@ -272,6 +296,12 @@ MidFrameLeft.columnconfigure(0, weight=1)
 
 
 # DEBUG
+def debugcommand():
+	return 0
+	
+DebugButton = Tk.Button(TopFrame, text = "DEBUG", command=debugcommand, bd = 0)
+DebugButton.pack(side="left")
+
 
 # MAINLOOP
 root.mainloop()

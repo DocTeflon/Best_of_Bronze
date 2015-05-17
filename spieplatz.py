@@ -1,15 +1,6 @@
-import sys
-from ChampDic import championDic
-
-count = 0
-
-for i in range(0,500):
-	try:
-		sys.stdout.write(championDic[i])
-		sys.stdout.write(",")
-		count += 1
-	except KeyError as k:
-		sys.stdout.write("")
-		
-print ""
-print count
+liste = [2]
+print liste[0]
+try:
+	print liste[1]
+except IndexError as I:
+	print "INDEXERROR"

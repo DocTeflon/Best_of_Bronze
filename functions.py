@@ -162,7 +162,10 @@ def findSpecDataById(id):
 	encKey = tmp[unicode("observers")][unicode("encryptionKey")]
 	
 	for i in range(0,10):
-		champIdList.append(tmp[unicode("participants")][i][unicode("championId")])
+		try:
+			champIdList.append(tmp[unicode("participants")][i][unicode("championId")])
+		except IndexError as I:
+			champIdList.append(0)
 	
 	rankList = fetchRanksOfIngamePlayers(tmp)
 	

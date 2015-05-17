@@ -1,4 +1,5 @@
 championDic = {
+	0:"NaC",
 	266:"Aatrox",
 	103:"Ahri",
 	84:"Akali",
