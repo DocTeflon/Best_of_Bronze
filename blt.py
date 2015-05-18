@@ -71,6 +71,12 @@ def search():
 	global iteration
 	game_switch = 1
 	
+	#RESET LABELS
+	for i in range(0,10):
+		CanvasRankText[i].set("Player " + str(i+1))
+		CanvasChampText[i].set("Champion " + str(i+1))
+
+
 	
 	content = None
 	while content is None:
